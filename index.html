@@ -174,10 +174,10 @@ async function entrarAluno(){
  const email=document.getElementById('loginEmailAluno').value.trim().toLowerCase();
  if(!email){msg('Informe o e-mail cadastrado.');return}
  try{
-   const encontrados=await api('alunos',{query:'?select=*&email=ilike.'+encodeURIComponent(email)+'&limit=1'});
-   if(!encontrados.length){msg('E-mail não cadastrado. Peça ao administrador para criar seu perfil.');return}
-   sessao={tipo:'aluno',aluno:encontrados[0]};
    localStorage.removeItem('nutri_access_token');
+   const encontrados=await api('rpc/entrar_aluno',{method:'POST',body:{p_email:email}});
+   if(!encontrados || !encontrados.length){msg('E-mail não cadastrado. Peça ao administrador para criar seu perfil.');return}
+   sessao={tipo:'aluno',aluno:encontrados[0]};
    abrirApp();
  }catch(e){msg('Não foi possível entrar: '+e.message)}
 }

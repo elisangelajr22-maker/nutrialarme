@@ -1,163 +1,316 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NutriAlarme</title>
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f3f6f8;color:#18212b}header{background:#168a45;color:#fff;padding:18px;text-align:center;position:sticky;top:0;z-index:5}header h1{margin:0 0 5px}header p{margin:0}nav{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;padding:10px;background:#fff;box-shadow:0 2px 8px #ddd}nav button{width:auto;margin:0;background:#168a45;padding:9px 13px}main{max-width:1100px;margin:auto;padding:18px}.aba{display:none}.aba.ativa{display:block}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:15px}.card{background:#fff;border-radius:12px;padding:16px;box-shadow:0 2px 10px #ddd;margin-bottom:15px}input,select,textarea,button{width:100%;padding:10px;margin:6px 0;border:1px solid #ccd3d8;border-radius:7px;font-size:15px}button{background:#168a45;color:#fff;border:0;cursor:pointer;font-weight:bold}.danger{background:#c0392b}.sec{background:#56636f}.item{padding:12px;margin:8px 0;background:#f5f7f8;border-left:4px solid #168a45;border-radius:6px}.stat{font-size:30px;font-weight:bold}.badge{display:inline-block;padding:4px 8px;border-radius:20px;background:#e8f6ed;color:#168a45;font-size:12px}#toast{position:fixed;right:15px;bottom:15px;background:#18212b;color:#fff;padding:12px 16px;border-radius:8px;display:none;z-index:20}@media(max-width:600px){main{padding:10px}}
-.login{max-width:430px;margin:60px auto;background:#fff;padding:28px;border-radius:16px;box-shadow:0 4px 18px #d7d7d7}.login h2{text-align:center}.hidden{display:none!important}.topbar{display:flex;justify-content:flex-end;gap:8px;align-items:center;padding:8px 18px;background:#eef5f1;font-size:14px}.topbar button{width:auto;padding:7px 12px;margin:0}</style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f4f7fb;color:#172033}button,input,select,textarea{font:inherit}button{cursor:pointer}.top{background:#0b5ed7;color:white;padding:18px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.top h1{margin:0;font-size:24px}.top small{opacity:.9}.wrap{max-width:1200px;margin:auto;padding:20px}.login{max-width:430px;margin:50px auto;background:white;padding:26px;border-radius:16px;box-shadow:0 8px 30px #0001}.login h2{margin-top:0}.tabs{display:flex;gap:8px;overflow:auto;margin:18px 0}.tabs button{border:0;background:white;padding:11px 15px;border-radius:10px;box-shadow:0 2px 8px #0001;white-space:nowrap}.tabs button.active{background:#0b5ed7;color:white}.card{background:white;border-radius:16px;padding:18px;margin-bottom:16px;box-shadow:0 4px 16px #0000000d}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:13px;font-weight:bold}.field input,.field select,.field textarea{width:100%;padding:11px;border:1px solid #d6dce5;border-radius:9px;background:#fff}.field textarea{min-height:90px;resize:vertical}.primary{background:#0b5ed7;color:white;border:0;padding:11px 16px;border-radius:9px}.secondary{background:#eef3f9;color:#172033;border:0;padding:11px 16px;border-radius:9px}.danger{background:#dc3545;color:white;border:0;padding:9px 12px;border-radius:8px}.success{background:#198754;color:white;border:0;padding:9px 12px;border-radius:8px}.muted{color:#687386}.hidden{display:none!important}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.stat{background:white;padding:18px;border-radius:14px}.stat b{font-size:26px;display:block}.badge{display:inline-block;padding:5px 9px;border-radius:99px;background:#eef3f9;font-size:12px}.badge.ok{background:#d1e7dd;color:#0f5132}.badge.pending{background:#fff3cd;color:#664d03}.item{border:1px solid #e0e5ec;border-radius:12px;padding:14px;margin-top:10px}.item h4{margin:0 0 7px}.row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.notice{padding:12px;border-radius:10px;background:#fff3cd;color:#664d03;margin-bottom:14px}.notice.ok{background:#d1e7dd;color:#0f5132}.error{background:#f8d7da;color:#842029}.tablewrap{overflow:auto}.table{width:100%;border-collapse:collapse}.table th,.table td{padding:10px;border-bottom:1px solid #e7ebf0;text-align:left;white-space:nowrap}.empty{text-align:center;padding:30px;color:#687386}.footer{padding:20px;text-align:center;color:#748093;font-size:12px}@media(max-width:750px){.grid,.grid3,.stats{grid-template-columns:1fr}.wrap{padding:12px}.top{padding:15px}.tabs{margin:12px 0}.stat b{font-size:22px}}
+</style>
 </head>
 <body>
-<header><h1>🥗 NutriAlarme</h1><p>Gestão de treino, nutrição e respostas</p></header>
-<div id="loginTela" class="login">
-<h2>🔐 Acesso ao NutriAlarme</h2>
-<p style="text-align:center">Escolha seu tipo de acesso.</p>
-<select id="tipoLogin" onchange="trocarLogin()"><option value="admin">👨‍💼 Administrador</option><option value="aluno">👤 Aluno</option></select>
+<div class="top"><div><h1>🥗 NutriAlarme</h1><small>Treinos, refeições e acompanhamento do aluno</small></div><div id="statusCloud">☁️ Conectando...</div></div>
+
+<div id="login" class="login">
+<h2>Entrar no NutriAlarme</h2>
+<p class="muted">Escolha como deseja entrar.</p>
+<div class="tabs"><button id="btnAdminLogin" class="active" onclick="modoLogin('admin')">Administrador</button><button id="btnAlunoLogin" onclick="modoLogin('aluno')">Aluno</button></div>
 <div id="loginAdmin">
-<input id="loginUsuario" placeholder="Usuário do administrador">
-<input id="loginSenha" type="password" placeholder="Senha">
-<button onclick="loginAdmin()">Entrar como administrador</button>
-<p style="font-size:12px;color:#667">Primeiro acesso: usuário <b>admin</b> e senha <b>1234</b>.</p>
+<div class="field"><label>Usuário</label><input id="loginUsuario" value="admin"></div><br>
+<div class="field"><label>Senha</label><input id="loginSenha" type="password" placeholder="Senha"></div><br>
+<button class="primary" style="width:100%" onclick="entrarAdmin()">Entrar como administrador</button>
+<p class="muted">Senha inicial do sistema: <b>1234</b></p>
 </div>
 <div id="loginAluno" class="hidden">
-<input id="loginAlunoEmail" type="email" placeholder="E-mail cadastrado do aluno">
-<button onclick="loginAluno()">Entrar como aluno</button>
+<div class="field"><label>E-mail cadastrado</label><input id="loginEmailAluno" type="email" placeholder="aluno@email.com"></div><br>
+<button class="primary" style="width:100%" onclick="entrarAluno()">Entrar como aluno</button>
 </div>
-<div id="loginMsg" style="margin-top:12px"></div>
+<p id="loginMsg"></p>
 </div>
-<div id="sistema" class="hidden">
-<div class="topbar"><span id="usuarioLogado"></span><button class="sec" onclick="sair()">Sair</button></div>
-<nav><button onclick="aba('inicio')">🏠 Início</button><button onclick="aba('alunos')">👤 Alunos</button><button onclick="aba('treinos')">🏋️ Treinos</button><button onclick="aba('refeicoes')">🥗 Refeições</button><button onclick="aba('respostas')">📝 Respostas</button><button onclick="aba('aluno')">🎓 Área do Aluno</button><button onclick="aba('config')">⚙️ Dados</button></nav>
-<main>
-<section id="inicio" class="aba ativa"><div class="grid"><div class="card"><div class="stat" id="sAlunos">0</div>Alunos</div><div class="card"><div class="stat" id="sTreinos">0</div>Treinos</div><div class="card"><div class="stat" id="sRefeicoes">0</div>Refeições</div><div class="card"><div class="stat" id="sPendentes">0</div>Pendências</div></div><div class="card"><h2>🔔 Notificações</h2><p id="status">Verificando...</p><button onclick="ativarNotificacoes()">Ativar notificações</button><button onclick="testarNotificacao()">Testar notificação</button></div><div class="card"><h2>📅 Próximos</h2><div id="proximos"></div></div></section>
-<section id="alunos" class="aba"><div class="card"><h2>👤 Cadastro</h2><input id="nome" placeholder="Nome completo"><input id="email" type="email" placeholder="E-mail"><input id="telefone" placeholder="Telefone"><select id="objetivo"><option value="">Objetivo</option><option>Emagrecimento</option><option>Ganho de massa muscular</option><option>Condicionamento físico</option><option>Performance esportiva</option><option>Manutenção</option></select><textarea id="obs" placeholder="Observações"></textarea><button onclick="salvarAluno()">Cadastrar aluno</button></div><div class="card"><h2>Alunos</h2><div id="listaAlunos"></div></div></section>
-<section id="treinos" class="aba"><div class="card"><h2>🏋️ Novo treino</h2><select id="tAluno"></select><input id="tData" type="date"><input id="tHora" type="time"><select id="tTipo"><option>Musculação</option><option>Corrida</option><option>Ciclismo</option><option>Futebol</option><option>Natação</option><option>Outro</option></select><textarea id="tOrientacao" placeholder="Orientação"></textarea><button onclick="salvarTreino()">Salvar treino</button></div><div class="card"><h2>Treinos</h2><div id="listaTreinos"></div></div></section>
-<section id="refeicoes" class="aba"><div class="card"><h2>🥗 Nova refeição</h2><select id="rAluno"></select><input id="rData" type="date"><input id="rHora" type="time"><select id="rTipo"><option>Café da manhã</option><option>Lanche da manhã</option><option>Almoço</option><option>Lanche da tarde</option><option>Jantar</option><option>Ceia</option><option>Suplementação</option></select><textarea id="rDesc" placeholder="Descrição"></textarea><button onclick="salvarRefeicao()">Salvar refeição</button></div><div class="card"><h2>Refeições</h2><div id="listaRefeicoes"></div></div></section>
-<section id="aluno" class="aba"><div class="card"><h2>👤 Área do Aluno</h2><input id="loginEmail" type="email" placeholder="E-mail do aluno"><button onclick="entrarAluno()">Entrar</button><div id="alunoArea"></div></div></section>
-<section id="respostas" class="aba"><div class="card"><h2>📝 Salvar resposta</h2><select id="respAluno"></select><select id="respTipo"><option>Treino</option><option>Refeição</option><option>Outro</option></select><textarea id="respTexto" placeholder="Resposta do aluno"></textarea><button onclick="salvarResposta()">Salvar resposta</button></div><div class="card"><h2>Respostas</h2><div id="listaRespostas"></div></div><div class="card"><h2>🚨 Pendências</h2><div id="pendencias"></div></div></section>
-<section id="config" class="aba"><div class="card"><h2>💾 Backup</h2><button onclick="exportarDados()">Baixar backup</button><input type="file" id="arquivoBackup" accept=".json" onchange="importarDados(event)"><button class="danger" onclick="limparTudo()">Apagar dados</button></div><div class="card"><h2>ℹ️ Importante</h2><p>Esta versão é um único HTML, sem Java. Os dados ficam no navegador deste dispositivo.</p><p>Para compartilhar por um link e ter vários usuários, login, banco de dados e envio automático de e-mail, o próximo passo é publicar esta aplicação com um servidor.</p></div></section>
-</main></div><div id="toast"></div>
+
+<div id="app" class="hidden">
+<div class="wrap">
+<div class="row"><div><h2 id="tituloPagina">Início</h2><span id="usuarioAtual" class="badge"></span></div><button class="secondary" onclick="sair()">Sair</button></div>
+<div id="alertaPendencias"></div>
+<div class="tabs" id="tabsAdmin">
+<button class="active" onclick="aba('inicio',this)">Início</button>
+<button onclick="aba('alunos',this)">Alunos</button>
+<button onclick="aba('treinos',this)">Treinos</button>
+<button onclick="aba('refeicoes',this)">Refeições</button>
+<button onclick="aba('respostas',this)">Respostas</button>
+<button onclick="aba('dados',this)">Dados</button>
+</div>
+<div class="tabs hidden" id="tabsAluno">
+<button class="active" onclick="aba('aluno',this)">Minha área</button>
+</div>
+
+<section id="sec-inicio">
+<div class="stats">
+<div class="stat"><span>Alunos</span><b id="statAlunos">0</b></div>
+<div class="stat"><span>Treinos</span><b id="statTreinos">0</b></div>
+<div class="stat"><span>Refeições</span><b id="statRefeicoes">0</b></div>
+<div class="stat"><span>Pendências</span><b id="statPendentes">0</b></div>
+</div>
+<div class="card"><h3>Resumo</h3><p id="resumo">Carregando dados...</p></div>
+</section>
+
+<section id="sec-alunos" class="hidden">
+<div class="card"><h3>Cadastrar aluno</h3><div class="grid">
+<div class="field"><label>Nome</label><input id="alunoNome" placeholder="Nome completo"></div>
+<div class="field"><label>E-mail</label><input id="alunoEmail" type="email" placeholder="aluno@email.com"></div>
+<div class="field full"><label>Objetivo</label><textarea id="alunoObjetivo" placeholder="Ex.: emagrecimento, ganho de massa, condicionamento..."></textarea></div>
+</div><br><button class="primary" onclick="cadastrarAluno()">Salvar aluno na nuvem</button></div>
+<div class="card"><h3>Alunos cadastrados</h3><div id="listaAlunos"></div></div>
+</section>
+
+<section id="sec-treinos" class="hidden">
+<div class="card"><h3>Novo treino</h3><div class="grid">
+<div class="field"><label>Aluno</label><select id="treinoAluno"></select></div>
+<div class="field"><label>Nome do treino</label><input id="treinoNome" placeholder="Treino de pernas"></div>
+<div class="field"><label>Data</label><input id="treinoData" type="date"></div>
+<div class="field"><label>Horário</label><input id="treinoHorario" type="time"></div>
+<div class="field full"><label>Descrição</label><textarea id="treinoDescricao" placeholder="Exercícios, séries, observações..."></textarea></div>
+</div><br><button class="primary" onclick="cadastrarTreino()">Salvar treino</button></div>
+<div class="card"><h3>Treinos cadastrados</h3><div id="listaTreinos"></div></div>
+</section>
+
+<section id="sec-refeicoes" class="hidden">
+<div class="card"><h3>Nova refeição</h3><div class="grid">
+<div class="field"><label>Aluno</label><select id="refAluno"></select></div>
+<div class="field"><label>Nome da refeição</label><input id="refNome" placeholder="Café da manhã"></div>
+<div class="field"><label>Data</label><input id="refData" type="date"></div>
+<div class="field"><label>Horário</label><input id="refHorario" type="time"></div>
+<div class="field full"><label>Descrição</label><textarea id="refDescricao" placeholder="Alimentos e orientações..."></textarea></div>
+</div><br><button class="primary" onclick="cadastrarRefeicao()">Salvar refeição</button></div>
+<div class="card"><h3>Refeições cadastradas</h3><div id="listaRefeicoes"></div></div>
+</section>
+
+<section id="sec-respostas" class="hidden">
+<div class="card"><h3>Respostas dos alunos</h3><div id="listaRespostas"></div></div>
+</section>
+
+<section id="sec-dados" class="hidden">
+<div class="card"><h3>Dados e manutenção</h3><p>O banco principal está no Supabase. O botão abaixo permite testar novamente a conexão.</p><button class="primary" onclick="testarNuvem()">Testar conexão</button> <button class="secondary" onclick="limparDadosLocais()">Limpar dados locais deste navegador</button><p id="dadosMsg"></p></div>
+</section>
+
+<section id="sec-aluno" class="hidden">
+<div class="card"><h3 id="nomeAlunoArea">Minha área</h3><p id="dadosAlunoArea"></p></div>
+<div class="card"><h3>🏋️ Meus treinos</h3><div id="meusTreinos"></div></div>
+<div class="card"><h3>🍎 Minhas refeições</h3><div id="minhasRefeicoes"></div></div>
+</section>
+
+</div>
+<div class="footer">NutriAlarme • dados online via Supabase</div>
+</div>
+
 <script>
+/* =============================
+   CONFIGURAÇÃO SUPABASE
+   ============================= */
+const SUPABASE_URL = "https://tccwurcgxwbpwzwpinlb.supabase.co";
+const SUPABASE_KEY = "sb_publishable_T2Mjripwltc9E3iiNQsPkQ_6JeiEX6z";
 
+let alunos=[], treinos=[], refeicoes=[], respostas=[];
+let sessao={tipo:null,aluno:null};
 
-let perfilAtual=null;
-function trocarLogin(){
- let tipo=document.getElementById('tipoLogin').value;
- document.getElementById('loginAdmin').classList.toggle('hidden',tipo!=='admin');
- document.getElementById('loginAluno').classList.toggle('hidden',tipo!=='aluno');
- document.getElementById('loginMsg').textContent='';
-}
-function entrarSistema(perfil,nomeUsuario){
- perfilAtual=perfil;
- document.getElementById('loginTela').classList.add('hidden');
- document.getElementById('sistema').classList.remove('hidden');
- document.getElementById('usuarioLogado').textContent=nomeUsuario;
- aplicarPermissoes();
-}
-function loginAdmin(){
- let u=document.getElementById('loginUsuario').value.trim();
- let s=document.getElementById('loginSenha').value;
- if(u==='admin' && s==='1234'){entrarSistema('admin','👨‍💼 Administrador');aba('inicio');}
- else document.getElementById('loginMsg').innerHTML='<span style="color:#c0392b">Usuário ou senha incorretos.</span>';
-}
-function loginAluno(){
- let e=document.getElementById('loginAlunoEmail').value.trim().toLowerCase();
- let a=alunos.find(x=>(x.email||'').toLowerCase()===e);
- if(!a){document.getElementById('loginMsg').innerHTML='<span style="color:#c0392b">E-mail não encontrado.</span>';return;}
- alunoAtual=a; entrarSistema('aluno','👤 '+a.nome); document.getElementById('loginEmail').value=a.email; aba('aluno'); renderAreaAluno();
-}
-function sair(){perfilAtual=null;alunoAtual=null;document.getElementById('sistema').classList.add('hidden');document.getElementById('loginTela').classList.remove('hidden');document.getElementById('loginSenha').value='';document.getElementById('loginAlunoEmail').value='';trocarLogin();}
-function aplicarPermissoes(){
- let botoes=document.querySelectorAll('nav button');
- botoes.forEach(b=>b.style.display='inline-block');
- if(perfilAtual==='aluno'){
-   botoes.forEach(b=>{if(!b.textContent.includes('Área do Aluno'))b.style.display='none';});
- }
+async function api(tabela,opcoes={}){
+    const {method="GET", query="", body=null, prefer="return=representation"}=opcoes;
+    const h={"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY,"Content-Type":"application/json"};
+    if(prefer) h["Prefer"]=prefer;
+    const r=await fetch(SUPABASE_URL+"/rest/v1/"+tabela+query,{method,headers:h,body:body?JSON.stringify(body):undefined});
+    const texto=await r.text();
+    let dados=null; try{dados=texto?JSON.parse(texto):null}catch(e){dados=texto}
+    if(!r.ok) throw new Error(dados?.message||texto||("HTTP "+r.status));
+    return dados;
 }
 
-let alunoAtual=null;
-function entrarAluno(){
- let e=document.getElementById('loginEmail').value.trim().toLowerCase();
- let a=alunos.find(x=>(x.email||'').toLowerCase()===e);
- if(!a){document.getElementById('alunoArea').innerHTML='<p style="color:#c0392b">Aluno não encontrado.</p>';return;}
- alunoAtual=a; renderAreaAluno();
+function esc(v){return String(v??"").replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
+function msg(text,ok=false){const el=document.getElementById('loginMsg');el.className=ok?'notice ok':'notice error';el.innerText=text;}
+function hoje(){return new Date().toISOString().slice(0,10)}
+function nomeAluno(id){return alunos.find(a=>Number(a.id)===Number(id))?.nome||"Aluno não encontrado"}
+
+async function testarNuvem(){
+    try{await api('alunos',{query:'?select=id&limit=1'});document.getElementById('statusCloud').innerText='☁️ Banco online conectado';document.getElementById('dadosMsg').innerText='✅ Conexão funcionando.';return true}
+    catch(e){document.getElementById('statusCloud').innerText='⚠️ Erro no banco';document.getElementById('dadosMsg').innerText='❌ '+e.message;return false}
 }
-function respostaDaAtividade(alunoId, tipo, ref){
- return respostas.find(function(r){
-   return String(r.alunoId)===String(alunoId) && r.tipo===tipo && String(r.referencia)===String(ref);
- });
+
+async function carregarTudo(){
+    try{
+        [alunos,treinos,refeicoes,respostas]=await Promise.all([
+            api('alunos',{query:'?select=*&order=id.desc'}),
+            api('treinos',{query:'?select=*&order=id.desc'}),
+            api('refeicoes',{query:'?select=*&order=id.desc'}),
+            api('respostas',{query:'?select=*&order=id.desc'})
+        ]);
+        document.getElementById('statusCloud').innerText='☁️ Banco online conectado';
+        atualizarTudo();
+    }catch(e){
+        document.getElementById('statusCloud').innerText='⚠️ Banco com acesso parcial';
+        console.error(e);
+        document.getElementById('resumo').innerText='Não foi possível carregar todas as tabelas. Verifique as políticas RLS do Supabase.';
+    }
+}
+
+function modoLogin(m){
+    document.getElementById('loginAdmin').classList.toggle('hidden',m!=='admin');
+    document.getElementById('loginAluno').classList.toggle('hidden',m!=='aluno');
+    document.getElementById('btnAdminLogin').classList.toggle('active',m==='admin');
+    document.getElementById('btnAlunoLogin').classList.toggle('active',m==='aluno');
+    document.getElementById('loginMsg').innerText='';
+}
+
+async function entrarAdmin(){
+    const u=document.getElementById('loginUsuario').value.trim();
+    const s=document.getElementById('loginSenha').value;
+    if(u==='admin'&&s==='1234'){
+        sessao={tipo:'admin',aluno:null};
+        abrirApp();
+    }else msg('Usuário ou senha incorretos.');
+}
+
+async function entrarAluno(){
+    const email=document.getElementById('loginEmailAluno').value.trim().toLowerCase();
+    if(!email){msg('Digite o e-mail do aluno.');return}
+    try{
+        const encontrados=await api('alunos',{query:'?select=*&email=eq.'+encodeURIComponent(email)+'&limit=1'});
+        if(!encontrados.length){msg('Aluno não encontrado. Cadastre primeiro no sistema.');return}
+        sessao={tipo:'aluno',aluno:encontrados[0]};
+        abrirApp();
+    }catch(e){msg('Erro ao localizar aluno: '+e.message)}
+}
+
+function abrirApp(){
+    document.getElementById('login').classList.add('hidden');
+    document.getElementById('app').classList.remove('hidden');
+    document.getElementById('tabsAdmin').classList.toggle('hidden',sessao.tipo!=='admin');
+    document.getElementById('tabsAluno').classList.toggle('hidden',sessao.tipo!=='aluno');
+    document.getElementById('usuarioAtual').innerText=sessao.tipo==='admin'?'Administrador':sessao.aluno.nome;
+    if(sessao.tipo==='admin'){aba('inicio',document.querySelector('#tabsAdmin button'));carregarTudo();}
+    else {aba('aluno',document.querySelector('#tabsAluno button'));carregarTudoAluno();}
+    pedirNotificacao();
+}
+function sair(){sessao={tipo:null,aluno:null};location.reload()}
+
+function aba(nome,botao){
+    ['inicio','alunos','treinos','refeicoes','respostas','dados','aluno'].forEach(x=>document.getElementById('sec-'+x)?.classList.add('hidden'));
+    document.getElementById('sec-'+nome)?.classList.remove('hidden');
+    document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active')); if(botao)botao.classList.add('active');
+    const tit={inicio:'Início',alunos:'Alunos',treinos:'Treinos',refeicoes:'Refeições',respostas:'Respostas',dados:'Dados',aluno:'Minha área'};
+    document.getElementById('tituloPagina').innerText=tit[nome]||'NutriAlarme';
+    if(nome==='alunos')renderAlunos();
+    if(nome==='treinos')renderTreinos();
+    if(nome==='refeicoes')renderRefeicoes();
+    if(nome==='respostas')renderRespostas();
+    if(nome==='inicio')renderInicio();
+}
+
+async function cadastrarAluno(){
+    const nome=document.getElementById('alunoNome').value.trim();
+    const email=document.getElementById('alunoEmail').value.trim().toLowerCase();
+    const objetivo=document.getElementById('alunoObjetivo').value.trim();
+    if(!nome||!email){alert('Preencha nome e e-mail.');return}
+    try{
+        await api('alunos',{method:'POST',body:{nome,email,objetivo}});
+        document.getElementById('alunoNome').value='';document.getElementById('alunoEmail').value='';document.getElementById('alunoObjetivo').value='';
+        await carregarTudo();alert('✅ Aluno salvo no banco online.');
+    }catch(e){alert('❌ Não foi possível salvar: '+e.message)}
+}
+
+async function cadastrarTreino(){
+    const aluno_id=document.getElementById('treinoAluno').value;
+    const nome=document.getElementById('treinoNome').value.trim();
+    const data=document.getElementById('treinoData').value;
+    const horario=document.getElementById('treinoHorario').value;
+    const descricao=document.getElementById('treinoDescricao').value.trim();
+    if(!aluno_id||!nome){alert('Selecione o aluno e informe o nome do treino.');return}
+    try{await api('treinos',{method:'POST',body:{aluno_id:Number(aluno_id),nome,data:data||null,horario:horario||null,descricao}});await carregarTudo();document.getElementById('treinoNome').value='';document.getElementById('treinoDescricao').value='';alert('✅ Treino salvo.')}catch(e){alert('❌ Erro: '+e.message)}
+}
+
+async function cadastrarRefeicao(){
+    const aluno_id=document.getElementById('refAluno').value;
+    const nome=document.getElementById('refNome').value.trim();
+    const data=document.getElementById('refData').value;
+    const horario=document.getElementById('refHorario').value;
+    const descricao=document.getElementById('refDescricao').value.trim();
+    if(!aluno_id||!nome){alert('Selecione o aluno e informe o nome da refeição.');return}
+    try{await api('refeicoes',{method:'POST',body:{aluno_id:Number(aluno_id),nome,data:data||null,horario:horario||null,descricao}});await carregarTudo();document.getElementById('refNome').value='';document.getElementById('refDescricao').value='';alert('✅ Refeição salva.')}catch(e){alert('❌ Erro: '+e.message)}
+}
+
+async function salvarResposta(tipo,id){
+    const aluno=sessao.aluno;
+    if(!aluno)return;
+    const texto=prompt('Observação ou resposta (opcional):','Realizei conforme orientação.');
+    if(texto===null)return;
+    try{
+        await api('respostas',{method:'POST',body:{aluno_id:Number(aluno.id),tipo,referencia_id:Number(id),resposta:texto,realizado:true}});
+        await carregarTudoAluno();
+        alert('✅ Resposta salva no banco online.');
+    }catch(e){alert('❌ Erro ao salvar resposta: '+e.message)}
+}
+
+function respostaFeita(tipo,id){return respostas.some(r=>Number(r.aluno_id)===Number(sessao.aluno?.id)&&r.tipo===tipo&&Number(r.referencia_id)===Number(id)&&r.realizado)}
+
+function renderInicio(){
+    document.getElementById('statAlunos').innerText=alunos.length;
+    document.getElementById('statTreinos').innerText=treinos.length;
+    document.getElementById('statRefeicoes').innerText=refeicoes.length;
+    const pend=treinos.filter(t=>!respostas.some(r=>r.tipo==='treino'&&Number(r.referencia_id)===Number(t.id)&&r.realizado)).length+refeicoes.filter(t=>!respostas.some(r=>r.tipo==='refeicao'&&Number(r.referencia_id)===Number(t.id)&&r.realizado)).length;
+    document.getElementById('statPendentes').innerText=pend;
+    document.getElementById('resumo').innerText=pend?'Existem '+pend+' atividades ainda sem resposta registrada.':'Não há pendências identificadas.';
+    renderAlertaPendencias(pend);
+}
+function renderAlertaPendencias(pend){document.getElementById('alertaPendencias').innerHTML=pend?'<div class="notice">⚠️ Existem <b>'+pend+'</b> atividades sem resposta salva.</div>':'<div class="notice ok">✅ Nenhuma pendência geral encontrada.</div>'}
+
+function renderAlunos(){
+    document.getElementById('listaAlunos').innerHTML=alunos.length?alunos.map(a=>`<div class="item"><div class="row"><div><h4>${esc(a.nome)}</h4><div>${esc(a.email)}</div><small class="muted">${esc(a.objetivo||'Sem objetivo informado')}</small></div><span class="badge">ID ${a.id}</span></div></div>`).join(''):'<div class="empty">Nenhum aluno cadastrado.</div>';
+    preencherSelects();
+}
+function preencherSelects(){
+    const opts='<option value="">Selecione...</option>'+alunos.map(a=>`<option value="${a.id}">${esc(a.nome)} — ${esc(a.email)}</option>`).join('');
+    document.getElementById('treinoAluno').innerHTML=opts;document.getElementById('refAluno').innerHTML=opts;
+}
+function renderTreinos(){
+    preencherSelects();
+    document.getElementById('listaTreinos').innerHTML=treinos.length?treinos.map(t=>`<div class="item"><div class="row"><div><h4>🏋️ ${esc(t.nome)}</h4><div>${esc(nomeAluno(t.aluno_id))}</div><small>${esc(t.data||'Sem data')} ${esc(t.horario||'')} </small></div><span class="badge">ID ${t.id}</span></div><p>${esc(t.descricao||'')}</p></div>`).join(''):'<div class="empty">Nenhum treino cadastrado.</div>';
+}
+function renderRefeicoes(){
+    preencherSelects();
+    document.getElementById('listaRefeicoes').innerHTML=refeicoes.length?refeicoes.map(r=>`<div class="item"><div class="row"><div><h4>🍎 ${esc(r.nome)}</h4><div>${esc(nomeAluno(r.aluno_id))}</div><small>${esc(r.data||'Sem data')} ${esc(r.horario||'')}</small></div><span class="badge">ID ${r.id}</span></div><p>${esc(r.descricao||'')}</p></div>`).join(''):'<div class="empty">Nenhuma refeição cadastrada.</div>';
+}
+function renderRespostas(){
+    document.getElementById('listaRespostas').innerHTML=respostas.length?respostas.map(r=>`<div class="item"><div class="row"><div><h4>${r.realizado?'✅':'⏳'} ${esc(r.tipo)}</h4><div>${esc(nomeAluno(r.aluno_id))}</div><small>Referência: ${r.referencia_id} • ${new Date(r.created_at).toLocaleString('pt-BR')}</small></div><span class="badge ${r.realizado?'ok':'pending'}">${r.realizado?'Realizado':'Pendente'}</span></div><p>${esc(r.resposta||'Sem observação')}</p></div>`).join(''):'<div class="empty">Nenhuma resposta registrada.</div>';
+}
+
+async function carregarTudoAluno(){
+    try{
+        alunos=[sessao.aluno];
+        treinos=await api('treinos',{query:'?select=*&aluno_id=eq.'+sessao.aluno.id+'&order=data.asc,horario.asc'});
+        refeicoes=await api('refeicoes',{query:'?select=*&aluno_id=eq.'+sessao.aluno.id+'&order=data.asc,horario.asc'});
+        respostas=await api('respostas',{query:'?select=*&aluno_id=eq.'+sessao.aluno.id+'&order=id.desc'});
+        renderAreaAluno();
+        document.getElementById('statusCloud').innerText='☁️ Banco online conectado';
+    }catch(e){document.getElementById('statusCloud').innerText='⚠️ Banco com acesso parcial';alert('Erro ao carregar sua área: '+e.message)}
 }
 function renderAreaAluno(){
- if(!alunoAtual)return;
- let html='<h3>Olá, '+esc(alunoAtual.nome)+'! 👋</h3><p>Marque cada atividade como realizada e salve sua resposta.</p>';
- let ts=treinos.filter(x=>String(x.alunoId)===String(alunoAtual.id));
- let rs=refeicoes.filter(x=>String(x.alunoId)===String(alunoAtual.id));
- html+='<h4>🏋️ Treinos</h4>';
- if(!ts.length){html+='<p>Nenhum treino cadastrado.</p>';}else{
-  html+=ts.map(function(x){
-   let r=respostaDaAtividade(alunoAtual.id,'Treino',x.id);
-   return '<div class="item"><b>'+esc(x.tipo)+'</b><br>📅 '+x.data+' ⏰ '+x.hora+'<br>'+esc(x.orientacao)+'<br>'+
-    (r?'<span class="badge">✅ Realizado em '+esc(r.data)+'</span>':'<span class="badge" style="background:#fff3cd;color:#856404">⚠️ Pendente</span>')+
-    '<button onclick="salvarRespostaAluno(\'Treino\',\''+x.id+'\')">'+(r?'🔄 Atualizar resposta':'✅ Realizei e salvar resposta')+'</button></div>';
-  }).join('');
- }
- html+='<h4>🥗 Refeições</h4>';
- if(!rs.length){html+='<p>Nenhuma refeição cadastrada.</p>';}else{
-  html+=rs.map(function(x){
-   let r=respostaDaAtividade(alunoAtual.id,'Refeição',x.id);
-   return '<div class="item"><b>'+esc(x.tipo)+'</b><br>📅 '+x.data+' ⏰ '+x.hora+'<br>'+esc(x.desc)+'<br>'+
-    (r?'<span class="badge">✅ Realizado em '+esc(r.data)+'</span>':'<span class="badge" style="background:#fff3cd;color:#856404">⚠️ Pendente</span>')+
-    '<button onclick="salvarRespostaAluno(\'Refeição\',\''+x.id+'\')">'+(r?'🔄 Atualizar resposta':'✅ Realizei e salvar resposta')+'</button></div>';
-  }).join('');
- }
- html+='<div class="card" style="margin-top:15px"><h4>📝 Observação geral</h4><textarea id="respostaAlunoTexto" placeholder="Escreva uma observação, dificuldade ou comentário"></textarea><button onclick="salvarRespostaAluno(\'Outro\',\'manual\')">💾 Salvar observação</button></div>';
- document.getElementById('alunoArea').innerHTML=html;
-}
-function salvarRespostaAluno(tipo,ref){
- if(!alunoAtual)return;
- let campo=document.getElementById('respostaAlunoTexto');
- let texto=(campo&&campo.value.trim())||('Realizado: '+tipo);
- let existente=respostaDaAtividade(alunoAtual.id,tipo,ref);
- if(existente){
-   existente.texto=texto;
-   existente.data=new Date().toLocaleString('pt-BR');
- }else{
-   respostas.push({id:Date.now(),alunoId:alunoAtual.id,tipo:tipo,texto:texto,referencia:ref,data:new Date().toLocaleString('pt-BR')});
- }
- save();
- renderAreaAluno();
- render();
- toast('Resposta salva com sucesso!');
+    document.getElementById('nomeAlunoArea').innerText='Olá, '+sessao.aluno.nome+'!';
+    document.getElementById('dadosAlunoArea').innerText=sessao.aluno.email+' • '+(sessao.aluno.objetivo||'Objetivo não informado');
+    document.getElementById('meusTreinos').innerHTML=treinos.length?treinos.map(t=>{const ok=respostaFeita('treino',t.id);return `<div class="item"><div class="row"><div><h4>🏋️ ${esc(t.nome)}</h4><div>${esc(t.data||'')} ${esc(t.horario||'')}</div></div><span class="badge ${ok?'ok':'pending'}">${ok?'Realizado':'Pendente'}</span></div><p>${esc(t.descricao||'')}</p>${ok?'':`<button class="success" onclick="salvarResposta('treino',${t.id})">Realizei e salvar resposta</button>`}</div>`}).join(''):'<div class="empty">Nenhum treino programado.</div>';
+    document.getElementById('minhasRefeicoes').innerHTML=refeicoes.length?refeicoes.map(r=>{const ok=respostaFeita('refeicao',r.id);return `<div class="item"><div class="row"><div><h4>🍎 ${esc(r.nome)}</h4><div>${esc(r.data||'')} ${esc(r.horario||'')}</div></div><span class="badge ${ok?'ok':'pending'}">${ok?'Realizado':'Pendente'}</span></div><p>${esc(r.descricao||'')}</p>${ok?'':`<button class="success" onclick="salvarResposta('refeicao',${r.id})">Realizei e salvar resposta</button>`}</div>`}).join(''):'<div class="empty">Nenhuma refeição programada.</div>';
 }
 
-let alunos=JSON.parse(localStorage.getItem('na_alunos')||'[]'),treinos=JSON.parse(localStorage.getItem('na_treinos')||'[]'),refeicoes=JSON.parse(localStorage.getItem('na_refeicoes')||'[]'),respostas=JSON.parse(localStorage.getItem('na_respostas')||'[]'),enviados=JSON.parse(localStorage.getItem('na_enviados')||'[]');
-function save(){localStorage.setItem('na_alunos',JSON.stringify(alunos));localStorage.setItem('na_treinos',JSON.stringify(treinos));localStorage.setItem('na_refeicoes',JSON.stringify(refeicoes));localStorage.setItem('na_respostas',JSON.stringify(respostas));localStorage.setItem('na_enviados',JSON.stringify(enviados))}
-function aba(id){if(!perfilAtual)return;if(perfilAtual==='aluno'&&id!=='aluno')return;document.querySelectorAll('.aba').forEach(x=>x.classList.remove('ativa'));document.getElementById(id).classList.add('ativa');render()}
-function esc(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
-function nome(id){let a=alunos.find(x=>String(x.id)===String(id));return a?a.nome:'Aluno não encontrado'}
-function opts(el){el.innerHTML='<option value="">Selecione o aluno</option>';alunos.forEach(a=>el.innerHTML+=`<option value="${a.id}">${esc(a.nome)}</option>`)}
-function salvarAluno(){let n=nomeEl('nome'),e=nomeEl('email');if(!n||!e)return alert('Informe nome e e-mail.');alunos.push({id:Date.now(),nome:n,email:e,telefone:nomeEl('telefone'),objetivo:nomeEl('objetivo'),obs:nomeEl('obs')});save();['nome','email','telefone','obs'].forEach(i=>document.getElementById(i).value='');document.getElementById('objetivo').value='';render();toast('Aluno cadastrado!')}
-function nomeEl(id){return document.getElementById(id).value.trim()}
-function salvarTreino(){let a=nomeEl('tAluno'),d=nomeEl('tData'),h=nomeEl('tHora');if(!a||!d||!h)return alert('Preencha aluno, data e horário.');treinos.push({id:Date.now(),alunoId:a,data:d,hora:h,tipo:document.getElementById('tTipo').value,orientacao:nomeEl('tOrientacao')});save();render();toast('Treino salvo!')}
-function salvarRefeicao(){let a=nomeEl('rAluno'),d=nomeEl('rData'),h=nomeEl('rHora');if(!a||!d||!h)return alert('Preencha aluno, data e horário.');refeicoes.push({id:Date.now(),alunoId:a,data:d,hora:h,tipo:document.getElementById('rTipo').value,desc:nomeEl('rDesc')});save();render();toast('Refeição salva!')}
-function salvarResposta(){let a=nomeEl('respAluno'),t=nomeEl('respTexto');if(!a||!t)return alert('Selecione o aluno e escreva a resposta.');respostas.push({id:Date.now(),alunoId:a,tipo:document.getElementById('respTipo').value,texto:t,data:new Date().toLocaleString('pt-BR')});save();document.getElementById('respTexto').value='';render();toast('Resposta salva!')}
-function remover(tipo,id){if(!confirm('Deseja excluir este registro?'))return;if(tipo==='aluno')alunos=alunos.filter(x=>x.id!==id);if(tipo==='treino')treinos=treinos.filter(x=>x.id!==id);if(tipo==='refeicao')refeicoes=refeicoes.filter(x=>x.id!==id);if(tipo==='resposta')respostas=respostas.filter(x=>x.id!==id);save();render()}
-function render(){document.getElementById('sAlunos').textContent=alunos.length;document.getElementById('sTreinos').textContent=treinos.length;document.getElementById('sRefeicoes').textContent=refeicoes.length;let hoje=new Date().toLocaleDateString('pt-BR');let pend=0;alunos.forEach(a=>{treinos.filter(x=>String(x.alunoId)===String(a.id)&&x.data<=new Date().toISOString().slice(0,10)).forEach(x=>{if(!respostaDaAtividade(a.id,'Treino',x.id))pend++;});refeicoes.filter(x=>String(x.alunoId)===String(a.id)&&x.data<=new Date().toISOString().slice(0,10)).forEach(x=>{if(!respostaDaAtividade(a.id,'Refeição',x.id))pend++;});});document.getElementById('sPendentes').textContent=pend;opts(document.getElementById('tAluno'));opts(document.getElementById('rAluno'));opts(document.getElementById('respAluno'));
-document.getElementById('listaAlunos').innerHTML=alunos.length?alunos.map(a=>`<div class="item"><b>${esc(a.nome)}</b><br>📧 ${esc(a.email)}<br>📱 ${esc(a.telefone)}<br>🎯 ${esc(a.objetivo)}<br><button class="danger" onclick="remover('aluno',${a.id})">Excluir</button></div>`).join(''):'Nenhum aluno.';
-document.getElementById('listaTreinos').innerHTML=treinos.length?treinos.slice().reverse().map(x=>`<div class="item"><b>🏋️ ${esc(nome(x.alunoId))}</b><br>📅 ${x.data} ⏰ ${x.hora}<br>${esc(x.tipo)}<br>${esc(x.orientacao)}<br><button class="danger" onclick="remover('treino',${x.id})">Excluir</button></div>`).join(''):'Nenhum treino.';
-document.getElementById('listaRefeicoes').innerHTML=refeicoes.length?refeicoes.slice().reverse().map(x=>`<div class="item"><b>🥗 ${esc(nome(x.alunoId))}</b><br>📅 ${x.data} ⏰ ${x.hora}<br>${esc(x.tipo)}<br>${esc(x.desc)}<br><button class="danger" onclick="remover('refeicao',${x.id})">Excluir</button></div>`).join(''):'Nenhuma refeição.';
-document.getElementById('listaRespostas').innerHTML=respostas.length?respostas.slice().reverse().map(x=>`<div class="item"><b>📝 ${esc(nome(x.alunoId))}</b> <span class="badge">${esc(x.tipo)}</span><br>${esc(x.texto)}<br><small>${esc(x.data)}</small><br><button class="danger" onclick="remover('resposta',${x.id})">Excluir</button></div>`).join(''):'Nenhuma resposta.';
-document.getElementById('pendencias').innerHTML=alunos.length?alunos.map(a=>{let atividades=treinos.filter(x=>String(x.alunoId)===String(a.id)&&x.data<=new Date().toISOString().slice(0,10)).map(x=>({tipo:'Treino',ref:x.id,nome:x.tipo})).concat(refeicoes.filter(x=>String(x.alunoId)===String(a.id)&&x.data<=new Date().toISOString().slice(0,10)).map(x=>({tipo:'Refeição',ref:x.id,nome:x.tipo})));let faltas=atividades.filter(v=>!respostaDaAtividade(a.id,v.tipo,v.ref));return `<div class="item">${faltas.length?'🚨':'✅'} <b>${esc(a.nome)}</b> — ${faltas.length?faltas.length+' atividade(s) pendente(s)':'todas as atividades respondidas'}`+(faltas.length?'<br><small>'+faltas.map(v=>esc(v.tipo+': '+v.nome)).join(' • ')+'</small>':'')+'</div>'}).join(''):'Nenhum aluno.';
-verificarAlertasPendencia();
-let hojeIso=new Date().toISOString().slice(0,10),lista=[];treinos.filter(x=>x.data>=hojeIso).forEach(x=>lista.push({d:x.data,h:x.hora,t:'🏋️ '+x.tipo,a:nome(x.alunoId)}));refeicoes.filter(x=>x.data>=hojeIso).forEach(x=>lista.push({d:x.data,h:x.hora,t:'🥗 '+x.tipo,a:nome(x.alunoId)}));lista.sort((a,b)=>(a.d+a.h).localeCompare(b.d+b.h));document.getElementById('proximos').innerHTML=lista.slice(0,8).map(x=>`<div class="item">${x.d} às ${x.h} — <b>${esc(x.a)}</b> — ${esc(x.t)}</div>`).join('')||'Nenhum compromisso.'}
-function ativarNotificacoes(){if(!('Notification' in window))return alert('Navegador sem suporte.');Notification.requestPermission().then(p=>document.getElementById('status').textContent=p==='granted'?'✅ Notificações ativadas.':'❌ Permissão não concedida.')}
-function testarNotificacao(){if(!('Notification' in window)||Notification.permission!=='granted')return alert('Ative as notificações primeiro.');new Notification('🥗 NutriAlarme',{body:'🔔 Teste funcionando!'})}
-function verificarAlertasPendencia(){if(perfilAtual!=='admin')return;let hoje=new Date().toISOString().slice(0,10);let pendencias=[];alunos.forEach(a=>{let atividades=treinos.filter(x=>String(x.alunoId)===String(a.id)&&x.data<=hoje).map(x=>({tipo:'Treino',ref:x.id,nome:x.tipo})).concat(refeicoes.filter(x=>String(x.alunoId)===String(a.id)&&x.data<=hoje).map(x=>({tipo:'Refeição',ref:x.id,nome:x.tipo})));let faltas=atividades.filter(v=>!respostaDaAtividade(a.id,v.tipo,v.ref));if(faltas.length)pendencias.push({aluno:a,faltas:faltas});});let box=document.getElementById('alertaPendencias');if(box){if(pendencias.length){box.innerHTML='🚨 <b>'+pendencias.length+' aluno(s) com pendência.</b> <button onclick="aba(\'respostas\')">Ver pendências</button>';box.style.display='block';}else{box.innerHTML='✅ Nenhuma pendência no momento.';box.style.display='block';}}if(pendencias.length&&'Notification' in window&&Notification.permission==='granted'){let chave='pend_'+hoje; if(!enviados.includes(chave)){enviados.push(chave);save();new Notification('🚨 NutriAlarme',{body:pendencias.length+' aluno(s) possuem atividades pendentes.'});}}}
-function verificarAlarmes(){if(!('Notification' in window)||Notification.permission!=='granted')return;let n=new Date(),d=n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0')+'-'+String(n.getDate()).padStart(2,'0'),h=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');[...treinos.map(x=>({id:'t'+x.id,d:x.data,h:x.hora,t:'🏋️ Treino',m:nome(x.alunoId)+' — '+x.tipo})),...refeicoes.map(x=>({id:'r'+x.id,d:x.data,h:x.hora,t:'🥗 Refeição',m:nome(x.alunoId)+' — '+x.tipo}))].forEach(x=>{let k=x.id+'_'+d+'_'+h;if(x.d===d&&x.h===h&&!enviados.includes(k)){enviados.push(k);save();new Notification('🔔 NutriAlarme - '+x.t,{body:x.m})}})}
-function exportarDados(){let blob=new Blob([JSON.stringify({alunos,treinos,refeicoes,respostas},null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='backup-nutrialarme.json';a.click();URL.revokeObjectURL(a.href)}
-function importarDados(ev){let f=ev.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let d=JSON.parse(r.result);alunos=d.alunos||[];treinos=d.treinos||[];refeicoes=d.refeicoes||[];respostas=d.respostas||[];save();render();toast('Backup restaurado!')}catch(e){alert('Backup inválido.')}};r.readAsText(f)}
-function limparTudo(){if(confirm('Apagar todos os dados deste navegador?')){alunos=[];treinos=[];refeicoes=[];respostas=[];enviados=[];save();render()}}
-function toast(t){let x=document.getElementById('toast');x.textContent=t;x.style.display='block';setTimeout(()=>x.style.display='none',2500)}
-render();if('Notification' in window)document.getElementById('status').textContent=Notification.permission==='granted'?'✅ Notificações ativadas.':'Notificações desativadas.';setInterval(verificarAlarmes,10000);
+function atualizarTudo(){renderInicio();renderAlunos();renderTreinos();renderRefeicoes();renderRespostas();}
+function limparDadosLocais(){localStorage.clear();alert('Dados locais deste navegador foram limpos. Os dados do Supabase permanecem intactos.')}
+async function pedirNotificacao(){if('Notification' in window&&Notification.permission==='default'){try{await Notification.requestPermission()}catch(e){}}}
+function notificar(titulo,corpo){if('Notification' in window&&Notification.permission==='granted')new Notification(titulo,{body:corpo})}
+function verificarAlarmes(){
+    if(sessao.tipo!=='aluno')return;
+    const agora=new Date(), data=agora.toISOString().slice(0,10), hora=agora.toTimeString().slice(0,5);
+    [...treinos.map(x=>({...x,_tipo:'Treino'})),...refeicoes.map(x=>({...x,_tipo:'Refeição'}))].forEach(x=>{if(x.data===data&&x.horario===hora&&!respostaFeita(x._tipo==='Treino'?'treino':'refeicao',x.id)){const chave='alarme_'+x._tipo+'_'+x.id+'_'+data+'_'+hora;if(!sessionStorage.getItem(chave)){sessionStorage.setItem(chave,'1');notificar('NutriAlarme',x._tipo+': '+x.nome)}}});
+}
+setInterval(verificarAlarmes,30000);
+
+// Tenta a conexão ao abrir a página.
+testarNuvem();
 </script>
-</body></html>
+</body>
+</html>

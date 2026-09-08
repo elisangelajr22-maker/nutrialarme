@@ -21,9 +21,8 @@
 <button class="primary" style="width:100%" onclick="entrarAdmin()">Entrar como administrador</button>
 
 </div>
-<div id="loginAluno" class="hidden">
+<div id="loginAluno">
 <div class="field"><label>E-mail cadastrado</label><input id="loginEmailAluno" type="email" placeholder="aluno@email.com"></div><br>
-<div class="field"><label>Senha</label><input id="loginSenhaAluno" type="password" placeholder="Sua senha"></div><br>
 <button class="primary" style="width:100%" onclick="entrarAluno()">Entrar como aluno</button>
 </div>
 <p id="loginMsg"></p>
@@ -172,9 +171,15 @@ async function entrarAdmin(){
  try{await authLogin(email,senha);const ok=await api('rpc/is_admin',{method:'POST',body:{}});if(!ok){await authLogout();msg('Este usuário não possui acesso de administrador.');return}sessao={tipo:'admin',aluno:null};abrirApp()}catch(e){msg('Não foi possível entrar: '+e.message)}
 }
 async function entrarAluno(){
- const email=document.getElementById('loginEmailAluno').value.trim().toLowerCase(), senha=document.getElementById('loginSenhaAluno').value;
- if(!email||!senha){msg('Informe e-mail e senha.');return}
- try{const auth=await authLogin(email,senha);const uid=auth.user?.id||tokenUserId();const encontrados=await api('alunos',{query:'?select=*&auth_user_id=eq.'+encodeURIComponent(uid)+'&limit=1'});if(!encontrados.length){await authLogout();msg('Este acesso ainda não está vinculado a um aluno.');return}sessao={tipo:'aluno',aluno:encontrados[0]};abrirApp()}catch(e){msg('Não foi possível entrar: '+e.message)}
+ const email=document.getElementById('loginEmailAluno').value.trim().toLowerCase();
+ if(!email){msg('Informe o e-mail cadastrado.');return}
+ try{
+   const encontrados=await api('alunos',{query:'?select=*&email=eq.'+encodeURIComponent(email)+'&limit=1'});
+   if(!encontrados.length){msg('E-mail não cadastrado. Peça ao administrador para criar seu perfil.');return}
+   sessao={tipo:'aluno',aluno:encontrados[0]};
+   localStorage.removeItem('nutri_access_token');
+   abrirApp();
+ }catch(e){msg('Não foi possível entrar: '+e.message)}
 }
 
 function abrirApp(){

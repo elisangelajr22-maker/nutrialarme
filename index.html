@@ -86,7 +86,14 @@
 </section>
 
 <section id="sec-respostas" class="hidden">
-<div class="card"><h3>Respostas dos alunos</h3><div id="listaRespostas"></div></div>
+<div class="stats">
+<div class="stat"><span>Respostas salvas</span><b id="statRespostas">0</b></div>
+<div class="stat"><span>Atividades pendentes</span><b id="statRespPendentes">0</b></div>
+<div class="stat"><span>Treinos realizados</span><b id="statTreinosRealizados">0</b></div>
+<div class="stat"><span>Refeições realizadas</span><b id="statRefeicoesRealizadas">0</b></div>
+</div>
+<div class="card"><h3>📊 Acompanhamento dos alunos</h3><p class="muted">As pendências são atividades cadastradas que ainda não possuem uma resposta salva.</p><div id="resumoRespostas"></div></div>
+<div class="card"><h3>Respostas salvas</h3><div id="listaRespostas"></div></div>
 </section>
 
 <section id="sec-dados" class="hidden">
@@ -281,6 +288,23 @@ function renderRefeicoes(){
     document.getElementById('listaRefeicoes').innerHTML=refeicoes.length?refeicoes.map(r=>`<div class="item"><div class="row"><div><h4>🍎 ${esc(r.nome)}</h4><div>${esc(nomeAluno(r.aluno_id))}</div><small>${esc(r.data||'Sem data')} ${esc(r.horario||'')}</small></div><span class="badge">ID ${r.id}</span></div><p>${esc(r.descricao||'')}</p></div>`).join(''):'<div class="empty">Nenhuma refeição cadastrada.</div>';
 }
 function renderRespostas(){
+    const realizadosTreino=new Set(respostas.filter(r=>r.tipo==='treino'&&r.realizado).map(r=>Number(r.referencia_id)));
+    const realizadosRefeicao=new Set(respostas.filter(r=>r.tipo==='refeicao'&&r.realizado).map(r=>Number(r.referencia_id)));
+    const pendTreinos=treinos.filter(t=>!realizadosTreino.has(Number(t.id)));
+    const pendRefeicoes=refeicoes.filter(r=>!realizadosRefeicao.has(Number(r.id)));
+    document.getElementById('statRespostas').innerText=respostas.filter(r=>r.realizado).length;
+    document.getElementById('statRespPendentes').innerText=pendTreinos.length+pendRefeicoes.length;
+    document.getElementById('statTreinosRealizados').innerText=treinos.length-pendTreinos.length;
+    document.getElementById('statRefeicoesRealizadas').innerText=refeicoes.length-pendRefeicoes.length;
+    const porAluno=alunos.map(a=>{
+        const ts=treinos.filter(t=>Number(t.aluno_id)===Number(a.id));
+        const rs=refeicoes.filter(r=>Number(r.aluno_id)===Number(a.id));
+        const rt=ts.filter(t=>realizadosTreino.has(Number(t.id))).length;
+        const rr=rs.filter(r=>realizadosRefeicao.has(Number(r.id))).length;
+        const pend=ts.length-rt+rs.length-rr;
+        return `<div class="item"><div class="row"><div><h4>👤 ${esc(a.nome)}</h4><div>${esc(a.email)}</div></div><span class="badge ${pend?'pending':'ok'}">${pend?pend+' pendência(s)':'Tudo em dia'}</span></div><p>Treinos: <b>${rt}/${ts.length}</b> realizados • Refeições: <b>${rr}/${rs.length}</b> realizadas</p></div>`;
+    }).join('');
+    document.getElementById('resumoRespostas').innerHTML=porAluno||'<div class="empty">Nenhum aluno cadastrado.</div>';
     document.getElementById('listaRespostas').innerHTML=respostas.length?respostas.map(r=>`<div class="item"><div class="row"><div><h4>${r.realizado?'✅':'⏳'} ${esc(r.tipo)}</h4><div>${esc(nomeAluno(r.aluno_id))}</div><small>Referência: ${r.referencia_id} • ${new Date(r.created_at).toLocaleString('pt-BR')}</small></div><span class="badge ${r.realizado?'ok':'pending'}">${r.realizado?'Realizado':'Pendente'}</span></div><p>${esc(r.resposta||'Sem observação')}</p></div>`).join(''):'<div class="empty">Nenhuma resposta registrada.</div>';
 }
 
@@ -314,7 +338,6 @@ setInterval(verificarAlarmes,30000);
 
 // Tenta a conexão e restaura uma sessão autenticada ao abrir a página.
 testarNuvem();
-descobrirUsuario();
 </script>
 </body>
 </html>
